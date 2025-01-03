@@ -36,7 +36,7 @@ Console.CancelKeyPress += (_, eventArgs) => {
     cts.Cancel();
 };
 
-miner.MineAsync(cts.Token, Environment.ProcessorCount);
+miner.MineAsync(cts.Token, 1);//Environment.ProcessorCount);
 
 while (!cts.IsCancellationRequested) {
     status = await CoinApi.GetMiningStatus();

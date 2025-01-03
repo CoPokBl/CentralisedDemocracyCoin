@@ -158,18 +158,18 @@ public class DemCoinNode {
     private bool ValidateBlock(Block block, int skip = 0) {
         byte[] expectedHash = _blockDatabase.GetLastBlock(skip).Hash();
         if (!block.PrevHash.SequenceEqual(expectedHash)) {
-            Logger.Debug("NODE", $"Block verification failed. (PrevHash bad)");
+            Logger.Debug("Block verification failed. (PrevHash bad)");
             return false;
         }
 
         byte[] blockHash = SHA256.HashData(block.PrevHash.Concat(block.Nonce).ToArray());
         if (!IsHashValidBlock(blockHash)) {
-            Logger.Debug("NODE", "Block verification failed. (Nonce bad)");
+            Logger.Debug("Block verification failed. (Nonce bad)");
             return false;
         }
 
         if (block.Transactions.Length == 0) {
-            Logger.Debug("NODE", "Block verification failed. (No transactions)");
+            Logger.Debug("Block verification failed. (No transactions)");
             return false;
         }
 
@@ -178,14 +178,14 @@ public class DemCoinNode {
         foreach (Transaction transaction in block.Transactions) {
             if (transaction.Sender.SequenceEqual(new byte[32])) {  // coinbase
                 if (recordedCoinbase) {  // Only one is allowed
-                    Logger.Debug("NODE", "Block verification failed. (Only 1 coinbase allowed)");
+                    Logger.Debug("Block verification failed. (Only 1 coinbase allowed)");
                     allTransactionsValid = false;
                     break;
                 }
                 recordedCoinbase = true;
                 
                 if (Math.Abs(transaction.Amount - DemCoinSettings.MinerReward) > 0.01) {
-                    Logger.Debug("NODE", $"Block verification failed. (Invalid miner reward, reward: {transaction.Amount})");
+                    Logger.Debug($"Block verification failed. (Invalid miner reward, reward: {transaction.Amount})");
                     allTransactionsValid = false;
                     break;
                 }
@@ -219,27 +219,27 @@ public class DemCoinNode {
     /// <returns>True if the transaction is valid, otherwise false.</returns>
     public bool ValidateTransaction(Transaction transaction) {
         if (transaction.Amount <= 0) {  // Coinbases need a specific amount so this isn't needed
-            Logger.Debug("NODE", $"Block verification failed. (Negative transaction, amount: {transaction.Amount})");
+            Logger.Debug($"Block verification failed. (Negative transaction, amount: {transaction.Amount})");
             return false;
         }
             
         // Check if sender has enough money
         double senderBalance = _blockDatabase.GetBalance(transaction.Sender);
         if (senderBalance < transaction.Amount) {
-            Logger.Debug("NODE", $"Block verification failed. (Insufficient funds in transaction, senderbal: {senderBalance}, amount: {transaction.Amount})");
+            Logger.Debug($"Block verification failed. (Insufficient funds in transaction, senderbal: {senderBalance}, amount: {transaction.Amount})");
             return false;
         }
             
         // Check if transaction is valid (Not needed for coinbases)
         if (!transaction.IsSignatureValid()) {
-            Logger.Debug("NODE", "Block verification failed. (Invalid transaction signature)");
+            Logger.Debug("Block verification failed. (Invalid transaction signature)");
             return false;
         }
             
         // Check if the transaction number is valid
         ulong nextTn = GetNextTransactionNumber(transaction.Sender);
         if (transaction.TransactionNumber != nextTn) {
-            Logger.Debug("NODE", $"Block verification failed. (Transaction number invalid, expected: {nextTn}, actual: {transaction.TransactionNumber}.");
+            Logger.Debug($"Block verification failed. (Transaction number invalid, expected: {nextTn}, actual: {transaction.TransactionNumber}.");
             return false;
         }
 

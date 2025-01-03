@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miner", "Miner\Miner.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleWallet", "ConsoleWallet\ConsoleWallet.csproj", "{CA21226B-BCD7-4347-8920-FC62F76F4B7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{EBF64C98-DADB-49E7-9BE6-67112A964019}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemCoinDiscord", "DemCoinDiscord\DemCoinDiscord.csproj", "{BC10F4C3-8A2A-4CC5-872C-3D6411AC5ED2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{CA21226B-BCD7-4347-8920-FC62F76F4B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA21226B-BCD7-4347-8920-FC62F76F4B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA21226B-BCD7-4347-8920-FC62F76F4B7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF64C98-DADB-49E7-9BE6-67112A964019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF64C98-DADB-49E7-9BE6-67112A964019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF64C98-DADB-49E7-9BE6-67112A964019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF64C98-DADB-49E7-9BE6-67112A964019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC10F4C3-8A2A-4CC5-872C-3D6411AC5ED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC10F4C3-8A2A-4CC5-872C-3D6411AC5ED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC10F4C3-8A2A-4CC5-872C-3D6411AC5ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC10F4C3-8A2A-4CC5-872C-3D6411AC5ED2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

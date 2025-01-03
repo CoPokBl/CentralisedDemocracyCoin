@@ -1,0 +1,4 @@
+﻿
+using Testing;
+
+RandomBenchmarking.Run();

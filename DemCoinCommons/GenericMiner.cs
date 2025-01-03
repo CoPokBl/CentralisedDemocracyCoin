@@ -24,10 +24,10 @@ public class GenericMiner(byte[] prevHash) {
         byte[] dataBuff = new byte[40];
         byte[] hashBuff = new byte[32];
         while (!cancelToken.IsCancellationRequested) { 
-            random.NextBytes(nonce);
+            random.NextBytes(nonce);  // This is extremely fast. It can do about 100mil in 1sec.
             CheckedNonces++;
-            if (DemCoinUtils.IsNonceValid(PrevHash, nonce, dataBuff, hashBuff)) {  // We mined a block
-                MinedBlock.Invoke(nonce);
+            if (DemCoinUtils.IsNonceValid(PrevHash, nonce, dataBuff, hashBuff)) {
+                MinedBlock.Invoke(nonce);  // We mined a block
             }
         }
     }
