@@ -17,8 +17,13 @@ public class MiningController : ControllerBase {
         if (!Program.CoinNode.IsNonceValid(submission.nonce)) {
             return BadRequest("Invalid nonce, please rerequest previous block hash");
         }
-        
-        Program.CoinNode.MineBlock(submission.nonce, submission.walletAddress);
+
+        try {
+            Program.CoinNode.MineBlock(submission.nonce, submission.walletAddress);
+        }
+        catch (Exception) {
+            return BadRequest("Invalid nonce, please rerequest previous block hash");
+        }
         return Ok("Submission Accepted");
     }
 }

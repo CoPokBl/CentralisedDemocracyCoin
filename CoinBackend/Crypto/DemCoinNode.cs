@@ -12,10 +12,11 @@ public class DemCoinNode {
     private readonly List<Transaction> _pendingTransactions = [];  // These are currently volatile.
 
     private readonly object _pendingTransactionsLock = new();
+    private readonly object _mineLock = new();
 
     public void Init() {
         _blockDatabase = new BlockDatabase("blockchain.db");
-        Logger.Info("DB", "Database loaded with " + _blockDatabase.GetBlockCount() + " blocks.");
+        Logger.Info("Database loaded with " + _blockDatabase.GetBlockCount() + " blocks.");
 
         Debug.Assert(GetDefBlock().HashString() == Block.Deserialize(GetDefBlock().Serialize()).HashString(), "Deserialize/serialize failed");
 
@@ -23,7 +24,7 @@ public class DemCoinNode {
             AddChainStartBlock();
         }
         else {
-            Logger.Info("DB", "Loaded existing chain. Length: " + _blockDatabase.GetBlockCount());
+            Logger.Info("Loaded existing chain. Length: " + _blockDatabase.GetBlockCount());
         }
     }
     
@@ -45,37 +46,39 @@ public class DemCoinNode {
     }
 
     public void MineBlock(byte[] nonce, byte[] walletAddress) {
-        if (!IsNonceValid(nonce)) {
-            throw new Exception("Invalid nonce.");
-        }
-        
-        // Get all pending transactions
-        List<Transaction> transactions = [
-                new() {  // Coinbase, we get a reward :)
-                Sender = new byte[32],
-                Recipient = walletAddress,
-                Amount = DemCoinSettings.MinerReward,
-                Signature = [0],
-                TransactionNumber = 0
+        lock (_mineLock) {
+            if (!IsNonceValid(nonce)) {
+                throw new Exception("Invalid nonce.");
             }
-        ];
+        
+            // Get all pending transactions
+            List<Transaction> transactions = [
+                new() {  // Coinbase, we get a reward :)
+                    Sender = new byte[32],
+                    Recipient = walletAddress,
+                    Amount = DemCoinSettings.MinerReward,
+                    Signature = [0],
+                    TransactionNumber = 0
+                }
+            ];
 
-        lock (_pendingTransactionsLock) {
-            transactions.AddRange(_pendingTransactions);
-            _pendingTransactions.Clear();
+            lock (_pendingTransactionsLock) {
+                transactions.AddRange(_pendingTransactions);
+                _pendingTransactions.Clear();
+            }
+        
+            Block block = new() {
+                PrevHash = _blockDatabase.GetLastBlock().Hash(),
+                Nonce = nonce,
+                Transactions = transactions.ToArray()
+            };
+
+            Debug.Assert(ValidateBlock(block), "Valid block to add to database");  // Sanity check to make sure our own checks pass
+        
+            AddBlockToDatabase(block);
+        
+            Debug.Assert(ValidateBlock(_blockDatabase.GetLastBlock(), 1), "Block added to database correctly");
         }
-        
-        Block block = new() {
-            PrevHash = _blockDatabase.GetLastBlock().Hash(),
-            Nonce = nonce,
-            Transactions = transactions.ToArray()
-        };
-
-        Debug.Assert(ValidateBlock(block), "Valid block to add to database");  // Sanity check to make sure our own checks pass
-        
-        AddBlockToDatabase(block);
-        
-        Debug.Assert(ValidateBlock(_blockDatabase.GetLastBlock(), 1), "Block added to database correctly");
     }
 
     /// <summary>
