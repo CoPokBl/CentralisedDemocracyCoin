@@ -5,7 +5,7 @@ using DemCoinCommons;
 namespace Miner;
 
 public static class CoinApi {
-    public static string ApiUrl = "http://zane.serble.net:5208";
+    public static string ApiUrl = "https://demcoin.serble.net";
     private static readonly HttpClient Client = new();
 
     public static async Task<MiningStatus> GetMiningStatus() {
